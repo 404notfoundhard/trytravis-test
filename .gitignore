@@ -7,4 +7,10 @@
 .vscode
 service-account.json
 jdauphant.nginx
-
+# vagrant temp
+.vagrant/
+*.log
+*.pyc
+.molecule
+.cache
+.pytest_cache
