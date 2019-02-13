@@ -1,46 +1,28 @@
 dist: trusty
 sudo: required
-tasks:
-  - name: Prepare test enviroment
-    language: bash
-    before_install:
-    - wget https://releases.hashicorp.com/packer/1.3.4/packer_1.3.4_linux_amd64.zip -O /tmp/packer.zip
-    - wget https://releases.hashicorp.com/terraform/0.11.11/terraform_0.11.11_linux_amd64.zip -O /tmp/terraform.zip
-    - pip install ansible-lint
-    - https://github.com/wata727/tflint/releases/download/v0.7.3/tflint_linux_amd64.zip -O /tmp/tflint.zip
-    - cd /tmp
-    - unzip packer.zip
-    - unzip terrafrom.zip
-    - unzip tflint.zip
-  
-  - name: Validate packer
-    language: bash
-    before_install:
-    - /tmp/packer validate -var-file=./packer/variables ./packer/app.json
-    - /tmp/packer validate -var-file=./packer/variables ./packer/db.json  
-    
-  - name: Validate terraform
-    language: bash
-    before_install:
-    - terraform get ./terraform/prod
-    - terraform init ./terraform/prod
-    - terraform validate ./terraform/prod
-    - /tmp/tflint --deep ./terraform/prod
-
-    - terraform get ./terraform/stage
-    - terraform init ./terraform/stage
-    - terraform validate ./terraform/stage
-    - /tmp/tflint --deep ./terraform/stage
-
-  - name: Validate ansible
-    language: bash
-    before_install:
-    - ansible-lint ./ansible/playbooks/site.yml
-
-  - name: Otus test
-    language: bash
-    before_install:
-    - curl https://raw.githubusercontent.com/express42/otus-homeworks/2018-11/run.sh |bash
+language: bash
+before_install:
+  - curl https://raw.githubusercontent.com/express42/otus-homeworks/2018-11/run.sh |bash
+script:
+  - wget https://releases.hashicorp.com/packer/1.3.4/packer_1.3.4_linux_amd64.zip -O /tmp/packer.zip
+  - wget https://releases.hashicorp.com/terraform/0.11.11/terraform_0.11.11_linux_amd64.zip -O /tmp/terraform.zip
+  - pip install ansible-lint
+  - https://github.com/wata727/tflint/releases/download/v0.7.3/tflint_linux_amd64.zip -O /tmp/tflint.zip
+  - cd /tmp
+  - unzip packer.zip
+  - unzip terrafrom.zip
+  - unzip tflint.zip
+  - /tmp/packer validate -var-file=./packer/variables ./packer/app.json
+  - /tmp/packer validate -var-file=./packer/variables ./packer/db.json  
+  - terraform get ./terraform/prod
+  - terraform init ./terraform/prod
+  - terraform validate ./terraform/prod
+  - /tmp/tflint --deep ./terraform/prod
+  - terraform get ./terraform/stage
+  - terraform init ./terraform/stage
+  - terraform validate ./terraform/stage
+  - /tmp/tflint --deep ./terraform/stage
+  - ansible-lint ./ansible/playbooks/site.yml
 
 notifications:
   slack:
